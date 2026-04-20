@@ -25,15 +25,11 @@ MANDATORY GRAPH CONSTRAINTS:
 3. ABSOLUTE CONNECTIVITY (CRITICAL): 
    - THE GRAPH MUST BE A SINGLE, FULLY CONNECTED CLUSTER.
    - ZERO ORPHANED NODES OR FRAGMENTED CLUSTERS.
-   - If two systems seem unrelated, you MUST invent a logic bridge (e.g. "Data Pipeline", "Management Interface", or "Power Source") to join them.
    - Every node MUST have at least one valid link connecting it to the core system structure.
 4. REGULATORY INTEGRATION: 
    - Research top 10 applicable regulations.
    - Embed these as metadata (regulatoryReferences for nodes, regulatoryBasis for links).
    - NO nodes for standards.
-
-QUALITY VALIDATION:
-Check the resulting graph. If there are orphaned clusters, create the necessary physical or virtual connections to amalgamate the complete system into one cluster.
 
 JSON SCHEMA:
 {
