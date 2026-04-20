@@ -26,5 +26,5 @@ jobs:
         with:
           github_token: ${{ secrets.GITHUB_TOKEN }}
           publish_dir: ./dist
-     - name: Clean up generated assets
-          run: git clean -f -d assets/
+      - name: Clean up generated assets
+        run: git clean -f -d assets/
