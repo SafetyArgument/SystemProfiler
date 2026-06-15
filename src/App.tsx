@@ -4,7 +4,7 @@
  */
 
 import React, { useState, useEffect } from 'react';
-import { Network, Loader2, Info, MapPin, Briefcase, FileText, Globe, Sun, Moon, Download, AlertTriangle } from 'lucide-react';
+import { Network, Loader2, Info, MapPin, Briefcase, FileText, Globe, Sun, Moon, Download, AlertTriangle, ExternalLink } from 'lucide-react';
 import { ProjectDetails, AnalysisResult } from './types';
 import { researchProjectLandscape } from './services/geminiService';
 import { KnowledgeGraph } from './components/KnowledgeGraph';
@@ -16,7 +16,8 @@ const App: React.FC = () => {
     project: '',
     location: '',
     application: '',
-    context: ''
+    context: '',
+    userApiKey: ''
   });
   const [analyzing, setAnalyzing] = useState(false);
   const [result, setResult] = useState<AnalysisResult | null>(null);
@@ -37,6 +38,13 @@ const App: React.FC = () => {
   };
 
   const generateGraph = async () => {
+    const hasBuiltInKey = typeof process.env !== "undefined" && !!process.env.GEMINI_API_KEY;
+    const hasUserKey = !!details.userApiKey?.trim();
+    if (!hasBuiltInKey && !hasUserKey) {
+      setError("A Google Gemini API key is required on public deployments. Please obtain a free key from Google AI Studio and enter it below.");
+      return;
+    }
+
     if (!details.project || !details.location || !details.application) {
       setError("Please provide at least Project Name, Location, and Application type.");
       return;
@@ -151,6 +159,35 @@ const App: React.FC = () => {
                 placeholder="Constraints, environment, goals..."
                 className="w-full h-32 px-4 py-2 bg-background border border-border focus:border-primary rounded-[10px] text-xs outline-none transition-all resize-none placeholder:opacity-30"
               />
+            </div>
+
+            {/* Dynamic Gemini API Panel */}
+            <div className="space-y-2">
+              <div className="flex justify-between items-center">
+                <label className="text-[9px] uppercase tracking-widest font-mono font-bold text-foreground/60 flex items-center gap-2">
+                  Google Gemini API Key
+                </label>
+                <a 
+                  href="https://aistudio.google.com/" 
+                  target="_blank" 
+                  rel="noopener noreferrer" 
+                  className="text-[9px] font-mono uppercase tracking-[0.1em] hover:underline opacity-40 hover:opacity-100 flex items-center gap-1 transition-opacity"
+                >
+                  get free key <ExternalLink className="w-2.5 h-2.5" />
+                </a>
+              </div>
+              <input
+                type="password"
+                value={details.userApiKey || ''}
+                onChange={(e) => updateDetail('userApiKey', e.target.value)}
+                placeholder={typeof process.env !== "undefined" && process.env.GEMINI_API_KEY ? "Using built-in key (optional)" : "Enter Gemini API Key (starts with AIza...)"}
+                className="w-full px-4 py-2 bg-background border border-border focus:border-primary rounded-[10px] text-xs outline-none transition-all placeholder:opacity-30"
+                disabled={analyzing}
+              />
+              <p className="text-[8px] opacity-30 font-mono uppercase tracking-wider leading-relaxed text-justify">
+                {typeof process.env !== "undefined" && process.env.GEMINI_API_KEY ? "Optional in Studio sandbox. " : "Required on public deployments. "}
+                Your key is run purely client-side and never stored on any server.
+              </p>
             </div>
           </div>
 
