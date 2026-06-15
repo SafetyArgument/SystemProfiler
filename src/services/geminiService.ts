@@ -6,9 +6,18 @@
 import { GoogleGenAI, Type } from "@google/genai";
 import { ProjectDetails, AnalysisResult } from "../types";
 
-const ai = new GoogleGenAI({ apiKey: process.env.GEMINI_API_KEY });
+const getApiKey = (userKey?: string) => {
+  const key = userKey?.trim() || process.env.GEMINI_API_KEY;
+  if (!key) {
+    throw new Error("Gemini API Key is not set. Since you are using a public deployment, please obtain your own Google Gemini API key and enter it below.");
+  }
+  return key;
+};
 
 export async function researchProjectLandscape(details: ProjectDetails): Promise<AnalysisResult> {
+  const apiKey = getApiKey(details.userApiKey);
+  const ai = new GoogleGenAI({ apiKey });
+
   const prompt = `Act as a High-Senior Regulatory Engineer, Systems Architect, and Graph Theory Specialist.
 PROJECT DETAILS:
 - Project Name: ${details.project}
