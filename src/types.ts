@@ -8,6 +8,7 @@ export interface ProjectDetails {
   location: string;
   application: string;
   context: string;
+  userApiKey?: string;
 }
 
 export interface DeliverableNode {
